@@ -1,0 +1,157 @@
+{
+	"agent": {
+		"metrics_collection_interval": 60,
+		"run_as_user": "root"
+	},
+	"logs": {
+		"logs_collected": {
+			"files": {
+				"collect_list": [
+                    {% for nginxlog in salt['file.find']('/var/log/nginx', type='f', name='*log', print='name' ) %}
+					{
+						"file_path": "/var/log/nginx/{{ nginxlog }}",
+						"log_group_name": "/forumone/{{ pillar.project }}/{{ grains.roles[0] }}/nginx/",
+						"log_stream_name": "{instance_id}-{{ nginxlog }}"
+					},
+                    {% endfor %}
+                    {% for phpfpm in salt['file.find']('/var/log/php-fpm', type='f', name='*log', print='name' ) %}
+                    {
+						"file_path": "/var/log/php-fpm/{{ phpfpm }}",
+						"log_group_name": "/forumone/{{ pillar.project }}/{{ grains.roles[0] }}/php-fpm/",
+						"log_stream_name": "{instance_id}-{{ phpfpm }}"
+					},
+                    {% endfor %}
+                    {% for project_logs in salt['file.find']('/var/log/' + pillar.project, type='f', name='*log', print='name' ) %}
+                    {
+						"file_path": "/var/log/{{ pillar.project }}/{{ project_logs }}",
+						"log_group_name": "/forumone/{{ pillar.project }}/{{ grains.roles[0] }}/{{ pillar.project }}/",
+						"log_stream_name": "{instance_id}-{{ pillar.project }}"
+					},
+                    {% endfor %}
+					{% if pillar['cloudwatch_logs'] is defined %}
+                    {% for logname, streams in pillar.cloudwatch_logs.streams.items() %}
+                    {
+						"file_path": "{{ streams.path }}",
+						"log_group_name": "/forumone/{{ pillar.project }}/{{ grains.roles[0] }}/{{ logname }}",
+						"log_stream_name": "{instance_id}-{{ logname }}"
+                    },
+                    {% endfor %}
+                    {% endif %}
+                    {
+						"file_path": "/var/log/messages",
+						"log_group_name": "/forumone/{{ pillar.project }}/{{ grains.roles[0] }}/messages",
+						"log_stream_name": "{instance_id}-MESSAGES"
+                    },
+                    {
+						"file_path": "/var/log/maillog",
+						"log_group_name": "/forumone/{{ pillar.project }}/{{ grains.roles[0] }}/maillog",
+						"log_stream_name": "{instance_id}-MAILLOG"
+                    },
+                    {
+						"file_path": "/var/log/secure",
+						"log_group_name": "/forumone/{{ pillar.project }}/{{ grains.roles[0] }}/secure",
+						"log_stream_name": "{instance_id}-SECURE"
+                    },
+                    {
+						"file_path": "/var/log/cron",
+						"log_group_name": "/forumone/{{ pillar.project }}/{{ grains.roles[0] }}/cron",
+						"log_stream_name": "{instance_id}-CRON"
+                    },
+                    {
+						"file_path": "/var/log/salt/master",
+						"log_group_name": "/forumone/{{ pillar.project }}/{{ grains.roles[0] }}/salt-master",
+						"log_stream_name": "{instance_id}-SALT-MASTER"
+                    },
+                    {
+						"file_path": "/var/log/salt/minion",
+						"log_group_name": "/forumone/{{ pillar.project }}/{{ grains.roles[0] }}/salt-minion",
+						"log_stream_name": "{instance_id}-SALT-MINION"
+                    },
+                    {
+						"file_path": "/var/log/audit.log",
+						"log_group_name": "/forumone/{{ pillar.project }}/{{ grains.roles[0] }}/audit",
+						"log_stream_name": "{instance_id}-AUDIT"
+                    },
+                    {
+						"file_path": "/var/log/lastlog",
+						"log_group_name": "/forumone/{{ pillar.project }}/{{ grains.roles[0] }}/lastlog",
+						"log_stream_name": "{instance_id}-LASTLOG"
+                    }
+				]
+			}
+		}
+	},
+	"metrics": {
+		"append_dimensions": {
+			"AutoScalingGroupName": "${aws:AutoScalingGroupName}",
+			"ImageId": "${aws:ImageId}",
+			"InstanceId": "${aws:InstanceId}",
+			"InstanceType": "${aws:InstanceType}"
+		},
+		"metrics_collected": {
+			"collectd": {
+				"metrics_aggregation_interval": 60
+			},
+			"cpu": {
+				"measurement": [
+					"cpu_usage_idle",
+					"cpu_usage_iowait",
+					"cpu_usage_user",
+					"cpu_usage_system"
+				],
+				"metrics_collection_interval": 60,
+				"resources": [
+					"*"
+				],
+				"totalcpu": false
+			},
+			"disk": {
+				"measurement": [
+					"used_percent",
+					"inodes_free"
+				],
+				"metrics_collection_interval": 60,
+				"resources": [
+					"*"
+				]
+			},
+			"diskio": {
+				"measurement": [
+					"io_time",
+					"write_bytes",
+					"read_bytes",
+					"writes",
+					"reads"
+				],
+				"metrics_collection_interval": 60,
+				"resources": [
+					"*"
+				]
+			},
+			"mem": {
+				"measurement": [
+					"mem_used_percent"
+				],
+				"metrics_collection_interval": 60
+			},
+			"netstat": {
+				"measurement": [
+					"tcp_established",
+					"tcp_time_wait"
+				],
+				"metrics_collection_interval": 60
+			},
+			"statsd": {
+				"metrics_aggregation_interval": 60,
+				"metrics_collection_interval": 10,
+				"service_address": ":8125"
+			},
+			"swap": {
+				"measurement": [
+					"swap_used_percent"
+				],
+				"metrics_collection_interval": 60
+			}
+		}
+	}
+}
