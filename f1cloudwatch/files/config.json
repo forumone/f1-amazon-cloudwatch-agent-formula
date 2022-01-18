@@ -75,11 +75,6 @@
 						"file_path": "/var/log/audit.log",
 						"log_group_name": "/forumone/{{ pillar.project }}/{{ grains.roles[0] }}/audit",
 						"log_stream_name": "{instance_id}-AUDIT"
-                    },
-                    {
-						"file_path": "/var/log/lastlog",
-						"log_group_name": "/forumone/{{ pillar.project }}/{{ grains.roles[0] }}/lastlog",
-						"log_stream_name": "{instance_id}-LASTLOG"
                     }
 				]
 			}
