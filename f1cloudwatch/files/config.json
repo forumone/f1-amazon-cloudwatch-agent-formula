@@ -4,7 +4,7 @@
 		"metrics_collection_interval": 60,
 	{% else %}
 		"metrics_collection_interval": 300,
-	{%- endif -%}
+	{%- endif %}
 		"run_as_user": "root"
 	},
 	"logs": {
