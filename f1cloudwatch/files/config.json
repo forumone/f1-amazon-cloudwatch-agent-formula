@@ -1,6 +1,10 @@
 {
 	"agent": {
+	{%- if grains.roles is defined and 'utility' in grains.roles %}	
 		"metrics_collection_interval": 60,
+	{% else %}
+		"metrics_collection_interval": 300,
+	{%- endif %}
 		"run_as_user": "root"
 	},
 	"logs": {
@@ -89,9 +93,6 @@
 			"InstanceType": "${aws:InstanceType}"
 		},
 		"metrics_collected": {
-			"collectd": {
-				"metrics_aggregation_interval": 60
-			},
 			"cpu": {
 				"measurement": [
 					"cpu_usage_idle",
@@ -99,7 +100,6 @@
 					"cpu_usage_user",
 					"cpu_usage_system"
 				],
-				"metrics_collection_interval": 60,
 				"resources": [
 					"*"
 				],
@@ -110,7 +110,6 @@
 					"used_percent",
 					"inodes_free"
 				],
-				"metrics_collection_interval": 60,
 				"resources": [
 					"*"
 				]
@@ -123,7 +122,6 @@
 					"writes",
 					"reads"
 				],
-				"metrics_collection_interval": 60,
 				"resources": [
 					"*"
 				]
@@ -132,25 +130,17 @@
 				"measurement": [
 					"mem_used_percent"
 				],
-				"metrics_collection_interval": 60
 			},
 			"netstat": {
 				"measurement": [
 					"tcp_established",
 					"tcp_time_wait"
 				],
-				"metrics_collection_interval": 60
-			},
-			"statsd": {
-				"metrics_aggregation_interval": 60,
-				"metrics_collection_interval": 10,
-				"service_address": ":8125"
 			},
 			"swap": {
 				"measurement": [
 					"swap_used_percent"
 				],
-				"metrics_collection_interval": 60
 			}
 		}
 	}
