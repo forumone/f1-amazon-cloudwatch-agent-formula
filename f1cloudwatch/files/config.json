@@ -124,18 +124,18 @@
 			"mem": {
 				"measurement": [
 					"mem_used_percent"
-				],
+				]
 			},
 			"netstat": {
 				"measurement": [
 					"tcp_established",
 					"tcp_time_wait"
-				],
+				]
 			},
 			"swap": {
 				"measurement": [
 					"swap_used_percent"
-				],
+				]
 			}
 		}
 	}
