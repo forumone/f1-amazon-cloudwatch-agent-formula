@@ -8,7 +8,9 @@ logs:
     - group: logs
     - makedirs: True
     - mode: 2774
-
+    - depends_on:
+      - logs
+      
 awslogs:
   pkg.purged
 
