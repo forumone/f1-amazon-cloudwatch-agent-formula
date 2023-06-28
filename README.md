@@ -2,6 +2,15 @@
 
 This formula installs and configures Amazon Cloudwatch Agent.
 
+you can set log retention in the project pillar with this yaml:
+
+log_rentention_days: 365
+
+Where the interget MUST be one of these numbers:
+-1, 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, 2192, 2557, 2922, 3288, 3653
+
+This is an AWS API restriction.
+
 It lifts and shifts the source of the salt formula from its current location within <project>-infrastructure repositories into this repository, and 
 the `metric_collection_interval` to 300 seconds for all non utility instances.
 
