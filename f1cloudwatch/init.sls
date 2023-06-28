@@ -35,6 +35,8 @@ install_cloudwatch_agent:
     - group: root
     - mode: 600
     - template: jinja
+    - context: 
+        retention_days: {{ pillar.get('log_retention_days', '30') }}
     - require:
       - pkg: install_cloudwatch_agent
 

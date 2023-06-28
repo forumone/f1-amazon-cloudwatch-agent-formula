@@ -15,6 +15,7 @@
 					{
 						"file_path": "/var/log/nginx/{{ nginxlog }}",
 						"log_group_name": "/forumone/{{ pillar.project }}/{{ grains.roles[0] }}/nginx/",
+						"retention_in_days": {{ retention_days }},
 						"log_stream_name": "{instance_id}-{{ nginxlog }}"
 					},
                     {% endfor %}
@@ -22,6 +23,7 @@
                     {
 						"file_path": "/var/log/php-fpm/{{ phpfpm }}",
 						"log_group_name": "/forumone/{{ pillar.project }}/{{ grains.roles[0] }}/php-fpm/",
+						"retention_in_days": {{ retention_days }},
 						"log_stream_name": "{instance_id}-{{ phpfpm }}"
 					},
                     {% endfor %}
@@ -29,6 +31,7 @@
                     {
 						"file_path": "/var/log/{{ pillar.project }}/{{ project_logs }}",
 						"log_group_name": "/forumone/{{ pillar.project }}/{{ grains.roles[0] }}/{{ pillar.project }}/",
+						"retention_in_days": {{ retention_days }},
 						"log_stream_name": "{instance_id}-{{ pillar.project }}"
 					},
                     {% endfor %}
@@ -37,6 +40,7 @@
                     {
 						"file_path": "{{ streams.path }}",
 						"log_group_name": "/forumone/{{ pillar.project }}/{{ grains.roles[0] }}/{{ logname }}",
+						"retention_in_days": {{ retention_days }},
 						"log_stream_name": "{instance_id}-{{ logname }}"
                     },
                     {% endfor %}
@@ -44,36 +48,43 @@
                     {
 						"file_path": "/var/log/messages",
 						"log_group_name": "/forumone/{{ pillar.project }}/{{ grains.roles[0] }}/messages",
+						"retention_in_days": {{ retention_days }},
 						"log_stream_name": "{instance_id}-MESSAGES"
                     },
                     {
 						"file_path": "/var/log/maillog",
 						"log_group_name": "/forumone/{{ pillar.project }}/{{ grains.roles[0] }}/maillog",
+						"retention_in_days": {{ retention_days }},
 						"log_stream_name": "{instance_id}-MAILLOG"
                     },
                     {
 						"file_path": "/var/log/secure",
 						"log_group_name": "/forumone/{{ pillar.project }}/{{ grains.roles[0] }}/secure",
+						"retention_in_days": {{ retention_days }},
 						"log_stream_name": "{instance_id}-SECURE"
                     },
                     {
 						"file_path": "/var/log/cron",
 						"log_group_name": "/forumone/{{ pillar.project }}/{{ grains.roles[0] }}/cron",
+						"retention_in_days": {{ retention_days }},
 						"log_stream_name": "{instance_id}-CRON"
                     },
                     {
 						"file_path": "/var/log/salt/master",
 						"log_group_name": "/forumone/{{ pillar.project }}/{{ grains.roles[0] }}/salt-master",
+						"retention_in_days": {{ retention_days }},
 						"log_stream_name": "{instance_id}-SALT-MASTER"
                     },
                     {
 						"file_path": "/var/log/salt/minion",
 						"log_group_name": "/forumone/{{ pillar.project }}/{{ grains.roles[0] }}/salt-minion",
+						"retention_in_days": {{ retention_days }},
 						"log_stream_name": "{instance_id}-SALT-MINION"
                     },
                     {
 						"file_path": "/var/log/audit.log",
 						"log_group_name": "/forumone/{{ pillar.project }}/{{ grains.roles[0] }}/audit",
+						"retention_in_days": {{ retention_days }},
 						"log_stream_name": "{instance_id}-AUDIT"
                     }
 				]
