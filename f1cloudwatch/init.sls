@@ -1,29 +1,24 @@
-{% if pillar.vhosts.sites is defined %}
+logs:
+  group.present:
+    - gid: 5647
+    - addusers:
+{% if pillar.vhosts is defined %}
 {% for site, name in pillar.vhosts.sites.items() %}
   {% if name.user is defined %}
   {% set user = name.user %}
   {% else %}
   {% set user = site %}
   {% endif %}
-logs:
-  group.present:
-    - gid: 5647
-    - addusers:
       - {{ user }}
 {% endfor %}
 {% endif %}
-
-{% if pillar.node.sites is defined %}
+{% if pillar.node is defined %}
 {% for site, name in pillar.node.sites.items() %}
   {% if name.user is defined %}
   {% set user = name.user %}
   {% else %}
   {% set user = site %}
   {% endif %}
-logs:
-  group.present:
-    - gid: 5647
-    - addusers:
       - {{ user }}
 {% endfor %}
 {% endif %}
