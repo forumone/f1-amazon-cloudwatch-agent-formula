@@ -17,7 +17,7 @@ awslogs:
 /etc/awslogs/awslogs.conf:
   file.absent
 
-'amazon-linux-extras install collectd':
+'amazon-linux-extras install -y collectd':
   cmd.run:
     - unless: 
       - /bin/amazon-linux-extras list | grep collectd | grep -c enabled
