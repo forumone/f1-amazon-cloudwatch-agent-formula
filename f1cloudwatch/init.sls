@@ -1,6 +1,27 @@
 logs:
   group.present:
     - gid: 5647
+    - addusers:
+{% if pillar.vhosts is defined %}
+{% for site, name in pillar.vhosts.sites.items() %}
+  {% if name.user is defined %}
+  {% set user = name.user %}
+  {% else %}
+  {% set user = site %}
+  {% endif %}
+      - {{ user }}
+{% endfor %}
+{% endif %}
+{% if pillar.node is defined %}
+{% for site, name in pillar.node.sites.items() %}
+  {% if name.user is defined %}
+  {% set user = name.user %}
+  {% else %}
+  {% set user = site %}
+  {% endif %}
+      - {{ user }}
+{% endfor %}
+{% endif %}
 
 /var/log/{{ pillar.project }}/:
   file.directory:
