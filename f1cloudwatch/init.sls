@@ -22,6 +22,11 @@ logs:
       - {{ user }}
 {% endfor %}
 {% endif %}
+{% if pillar.siteusers is defined %}
+{% for user in pillar.siteusers %}
+      - {{ user }}
+{% endfor %}
+{% endif %}
 
 /var/log/{{ pillar.project }}/:
   file.directory:
