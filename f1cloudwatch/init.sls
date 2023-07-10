@@ -12,7 +12,7 @@ logs:
       - {{ user }}
 {% endfor %}
 {% endif %}
-{% if pillar.node is defined %}
+{% if pillar.node is defined and pillar.node.sites is defined %}
 {% for site, name in pillar.node.sites.items() %}
   {% if name.user is defined %}
   {% set user = name.user %}
