@@ -52,7 +52,6 @@ install_cloudwatch_agent:
   pkg.installed:
     - pkgs:
       - amazon-cloudwatch-agent
-      - collectd
 
 /opt/aws/amazon-cloudwatch-agent/bin/forumone.json:
   file.managed:
@@ -70,5 +69,16 @@ install_cloudwatch_agent:
   cmd.run:
     - success_retcodes: 0
     - onchanges:
+      - file: /opt/aws/amazon-cloudwatch-agent/bin/forumone.json
+      - install_cloudwatch_agent
+
+collectd-enabled:
+  service.enabled:
+    - name: collectd
+
+collectd-restart:
+  service.running:
+    - name: collectd
+    - watch:
       - file: /opt/aws/amazon-cloudwatch-agent/bin/forumone.json
       - install_cloudwatch_agent
