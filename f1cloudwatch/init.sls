@@ -52,7 +52,6 @@ install_cloudwatch_agent:
   pkg.installed:
     - pkgs:
       - amazon-cloudwatch-agent
-      - collectd
 
 /opt/aws/amazon-cloudwatch-agent/bin/forumone.json:
   file.managed:
