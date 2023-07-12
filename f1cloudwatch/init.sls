@@ -27,6 +27,7 @@ logs:
       - {{ user }}
 {% endfor %}
 {% endif %}
+    - order: last
 
 /var/log/{{ pillar.project }}/:
   file.directory:
