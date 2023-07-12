@@ -35,7 +35,7 @@ logs:
     - group: logs
     - makedirs: True
     - mode: 2774
-    - depends_on:
+    - require:
       - logs
       
 awslogs:
