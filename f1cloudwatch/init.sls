@@ -27,6 +27,7 @@ logs:
       - {{ user }}
 {% endfor %}
 {% endif %}
+    - order: last
 
 /var/log/{{ pillar.project }}/:
   file.directory:
@@ -34,7 +35,7 @@ logs:
     - group: logs
     - makedirs: True
     - mode: 2774
-    - depends_on:
+    - require:
       - logs
       
 awslogs:
