@@ -1,33 +1,38 @@
 logs:
   group.present:
     - gid: 5647
+{% if salt['grains.get']('roles:web-server') is defined  %}
+php-logs:
+  group.present:
+    - name: logs
+    - gid: 5647
     - addusers:
-{% if pillar.vhosts is defined %}
+{% if pillar.vhosts is defined and pillar.vhosts.sites is defined  %}
 {% for site, name in pillar.vhosts.sites.items() %}
-  {% if name.user is defined %}
-  {% set user = name.user %}
-  {% else %}
-  {% set user = site %}
-  {% endif %}
-      - {{ user }}
-{% endfor %}
-{% endif %}
-{% if pillar.node is defined and pillar.node.sites is defined %}
-{% for site, name in pillar.node.sites.items() %}
-  {% if name.user is defined %}
-  {% set user = name.user %}
-  {% else %}
-  {% set user = site %}
-  {% endif %}
-      - {{ user }}
-{% endfor %}
-{% endif %}
-{% if pillar.siteusers is defined %}
-{% for user in pillar.siteusers %}
+  {% set user = name.user | default(site)%}
       - {{ user }}
 {% endfor %}
 {% endif %}
     - order: last
+{% endif %}
+
+{% if salt['grains.get']('roles:node-server') is defined  %}
+node-logs:
+  group.present:
+    - name: logs
+    - gid: 5647
+    - addusers:
+{% if pillar.node is defined and pillar.node.sites is defined %}
+{% for site, name in pillar.node.sites.items() %}
+  {% set user = name.user | default(site)%}
+      - {{ user }}
+  {% endfor %}
+{% elif pillar.siteusers is defined %}
+{% for user in pillar.siteusers %}
+      - {{ user }}
+{% endfor %}
+{% endif %}
+{% endif %}
 
 /var/log/{{ pillar.project }}/:
   file.directory:
