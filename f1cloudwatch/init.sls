@@ -1,47 +1,50 @@
-logs:
-  group.present:
-    - gid: 5647
-{% if salt['grains.get']('roles:web-server') is defined  %}
-php-logs:
-  group.present:
-    - name: logs
-    - gid: 5647
-    - addusers:
-{% if pillar.vhosts is defined and pillar.vhosts.sites is defined  %}
-{% for site, name in pillar.vhosts.sites.items() %}
-  {% set user = name.user | default(site)%}
-      - {{ user }}
-{% endfor %}
-{% endif %}
-    - order: last
-{% endif %}
-
-{% if salt['grains.get']('roles:node-server') is defined  %}
-node-logs:
-  group.present:
-    - name: logs
-    - gid: 5647
-    - addusers:
-{% if pillar.node is defined and pillar.node.sites is defined %}
-{% for site, name in pillar.node.sites.items() %}
-  {% set user = name.user | default(site)%}
-      - {{ user }}
-  {% endfor %}
-{% elif pillar.siteusers is defined %}
-{% for user in pillar.siteusers %}
-      - {{ user }}
-{% endfor %}
-{% endif %}
-{% endif %}
-
 /var/log/{{ pillar.project }}/:
   file.directory:
     - user: root
-    - group: logs
     - makedirs: True
     - mode: 2774
-    - require:
-      - logs
+
+{% if pillar.vhosts is defined %}
+{% for site, name in pillar.vhosts.sites.items() %}
+{% set user = name.user|default(site) %}
+{{ user }}_{{ pillar.project }}_logs_dir_acl:
+  acl.present:
+    - name: /var/log/{{ pillar.project }}/
+    - acl_type: user
+    - acl_name: {{ user }}
+    - perms: rwx
+    - onlyif:
+      - grep -c {{ user }} /etc/passwd
+{% endfor %}
+{% endif %}
+
+
+{% if pillar.node is defined and pillar.node.sites is defined %}
+{% for site, name in pillar.node.sites.items() %}
+{% set user = name.user|default(site) %}
+{{ user }}_{{ pillar.project }}_logs_dir_acl:
+  acl.present:
+    - name: /var/log/{{ pillar.project }}/
+    - acl_type: user
+    - acl_name: {{ user }}
+    - perms: rwx
+    - onlyif:
+      - grep -c {{ user }} /etc/passwd
+{% endfor %}
+{% endif %}
+
+{% if pillar.siteusers is defined %}
+{% for user in pillar.siteusers %}
+{{ user }}_{{ pillar.project }}_logs_dir_acl:
+  acl.present:
+    - name: /var/log/{{ pillar.project }}/
+    - acl_type: user
+    - acl_name: {{ user }}
+    - perms: rwx
+    - onlyif:
+      - grep -c {{ user }} /etc/passwd
+{% endfor %}
+{% endif %}
       
 awslogs:
   pkg.purged
