@@ -1,42 +1,50 @@
-logs:
-  group.present:
-    - gid: 5647
-    - addusers:
-{% if pillar.vhosts is defined %}
-{% for site, name in pillar.vhosts.sites.items() %}
-  {% if name.user is defined %}
-  {% set user = name.user %}
-  {% else %}
-  {% set user = site %}
-  {% endif %}
-      - {{ user }}
-{% endfor %}
-{% endif %}
-{% if pillar.node is defined and pillar.node.sites is defined %}
-{% for site, name in pillar.node.sites.items() %}
-  {% if name.user is defined %}
-  {% set user = name.user %}
-  {% else %}
-  {% set user = site %}
-  {% endif %}
-      - {{ user }}
-{% endfor %}
-{% endif %}
-{% if pillar.siteusers is defined %}
-{% for user in pillar.siteusers %}
-      - {{ user }}
-{% endfor %}
-{% endif %}
-    - order: last
-
 /var/log/{{ pillar.project }}/:
   file.directory:
     - user: root
-    - group: logs
     - makedirs: True
     - mode: 2774
-    - require:
-      - logs
+
+{% if pillar.vhosts is defined %}
+{% for site, name in pillar.vhosts.sites.items() %}
+{% set user = name.user|default(site) %}
+{{ user }}_{{ pillar.project }}_logs_dir_acl:
+  acl.present:
+    - name: /var/log/{{ pillar.project }}/
+    - acl_type: user
+    - acl_name: {{ user }}
+    - perms: rwx
+    - onlyif:
+      - grep -c {{ user }} /etc/passwd
+{% endfor %}
+{% endif %}
+
+
+{% if pillar.node is defined and pillar.node.sites is defined %}
+{% for site, name in pillar.node.sites.items() %}
+{% set user = name.user|default(site) %}
+{{ user }}_{{ pillar.project }}_logs_dir_acl:
+  acl.present:
+    - name: /var/log/{{ pillar.project }}/
+    - acl_type: user
+    - acl_name: {{ user }}
+    - perms: rwx
+    - onlyif:
+      - grep -c {{ user }} /etc/passwd
+{% endfor %}
+{% endif %}
+
+{% if pillar.siteusers is defined %}
+{% for user in pillar.siteusers %}
+{{ user }}_{{ pillar.project }}_logs_dir_acl:
+  acl.present:
+    - name: /var/log/{{ pillar.project }}/
+    - acl_type: user
+    - acl_name: {{ user }}
+    - perms: rwx
+    - onlyif:
+      - grep -c {{ user }} /etc/passwd
+{% endfor %}
+{% endif %}
       
 awslogs:
   pkg.purged
