@@ -27,12 +27,12 @@
 						"log_stream_name": "{instance_id}-{{ phpfpm }}"
 					},
                     {% endfor %}
-                    {% for project_logs in salt['file.find']('/var/log/' + pillar.project, type='f', name='*log', print='name' ) %}
+                    {% for project_logs in salt['file.find']('/var/log/' + pillar.project, type='f', name='*', print='name' ) %}
                     {
 						"file_path": "/var/log/{{ pillar.project }}/{{ project_logs }}",
 						"log_group_name": "/forumone/{{ pillar.project }}/{{ grains.roles[0] }}/{{ pillar.project }}/",
 						"retention_in_days": {{ retention_days }},
-						"log_stream_name": "{instance_id}-{{ pillar.project }}"
+						"log_stream_name": "{{ project_logs }}"
 					},
                     {% endfor %}
 					{% if pillar['cloudwatch_logs'] is defined %}
