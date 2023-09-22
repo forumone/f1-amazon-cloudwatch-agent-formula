@@ -52,10 +52,16 @@ awslogs:
 /etc/awslogs/awslogs.conf:
   file.absent
 
-'amazon-linux-extras install -y collectd':
+'amazon-linux-extras enable collectd':
   cmd.run:
     - unless: 
-      - /bin/amazon-linux-extras list | grep collectd | grep -c enabled
+      - grep collectd /etc/yum.repos.d/amzn2-extras.repo
+
+install_collectd_aws_extras:
+  pkg.installed:
+    - fromrepo: amzn2extra-collectd
+    - pkgs:
+      - collectd
 
 install_cloudwatch_agent:
   pkg.installed:
